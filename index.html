@@ -1,0 +1,380 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hasabasa</title>
+    <meta name="description" content="Автоматизация продаж в Kaspi.kz" />
+    <meta name="author" content="Hasabasa" />
+
+    <meta property="og:title" content="Автоматизация продаж в Kaspi.kz" />
+    <meta property="og:description" content="Hasabasa" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <style>
+      /* Critical loading styles - inline for instant display */
+      #initial-loader {
+        position: fixed;
+        inset: 0;
+        background: rgb(249 250 251);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+      }
+      
+      #initial-loader.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+      
+      .initial-loading-wrapper {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        background-color: transparent;
+      }
+
+      .initial-box-wrap {
+        width: 70%;
+        height: 70%;
+        margin: calc((100% - 70%) / 2) calc((100% - 70%) / 2);
+        position: relative;
+        transform: rotate(-45deg);
+      }
+
+      .initial-box {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: linear-gradient(
+          to right,
+          #3b82f6,
+          rgba(59, 130, 246, 0.8),
+          #8b5cf6,
+          #06b6d4,
+          #3b82f6,
+          #8b5cf6,
+          #06b6d4,
+          #10b981,
+          #f59e0b,
+          #3b82f6,
+          rgba(59, 130, 246, 0.8)
+        );
+        background-position: 0% 50%;
+        background-size: 1000% 1000%;
+        visibility: hidden;
+        border-radius: 8px;
+      }
+
+      .initial-box.one {
+        animation: initialMoveGradient 15s infinite, initialOneMove 3.5s infinite;
+      }
+
+      .initial-box.two {
+        animation: initialMoveGradient 15s infinite, initialTwoMove 3.5s 0.15s infinite;
+      }
+
+      .initial-box.three {
+        animation: initialMoveGradient 15s infinite, initialThreeMove 3.5s 0.3s infinite;
+      }
+
+      .initial-box.four {
+        animation: initialMoveGradient 15s infinite, initialFourMove 3.5s 0.575s infinite;
+      }
+
+      .initial-box.five {
+        animation: initialMoveGradient 15s infinite, initialFiveMove 3.5s 0.725s infinite;
+      }
+
+      .initial-box.six {
+        animation: initialMoveGradient 15s infinite, initialSixMove 3.5s 0.875s infinite;
+      }
+
+      @keyframes initialMoveGradient {
+        to {
+          background-position: 100% 50%;
+        }
+      }
+
+      @keyframes initialOneMove {
+        0% {
+          visibility: visible;
+          clip-path: inset(0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        14.2857% {
+          clip-path: inset(0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        28.5714% {
+          clip-path: inset(35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        42.8571% {
+          clip-path: inset(35% 70% 35% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        57.1428% {
+          clip-path: inset(35% 70% 35% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        71.4285% {
+          clip-path: inset(0% 70% 70% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        85.7142% {
+          clip-path: inset(0% 70% 70% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        100% {
+          clip-path: inset(0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+      }
+
+      @keyframes initialTwoMove {
+        0% {
+          visibility: visible;
+          clip-path: inset(0% 70% 70% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        14.2857% {
+          clip-path: inset(0% 70% 70% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        28.5714% {
+          clip-path: inset(0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        42.8571% {
+          clip-path: inset(0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        57.1428% {
+          clip-path: inset(35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        71.4285% {
+          clip-path: inset(35% 70% 35% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        85.7142% {
+          clip-path: inset(35% 70% 35% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        100% {
+          clip-path: inset(0% 70% 70% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+      }
+
+      @keyframes initialThreeMove {
+        0% {
+          visibility: visible;
+          clip-path: inset(35% 70% 35% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        14.2857% {
+          clip-path: inset(35% 70% 35% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        28.5714% {
+          clip-path: inset(0% 70% 70% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        42.8571% {
+          clip-path: inset(0% 70% 70% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        57.1428% {
+          clip-path: inset(0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        71.4285% {
+          clip-path: inset(0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        85.7142% {
+          clip-path: inset(35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        100% {
+          clip-path: inset(35% 70% 35% 0 round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+      }
+
+      @keyframes initialFourMove {
+        0% {
+          visibility: visible;
+          clip-path: inset(35% 0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        14.2857% {
+          clip-path: inset(35% 0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        28.5714% {
+          clip-path: inset(35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        42.8571% {
+          clip-path: inset(70% 35% 0% 35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        57.1428% {
+          clip-path: inset(70% 35% 0% 35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        71.4285% {
+          clip-path: inset(70% 0 0 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        85.7142% {
+          clip-path: inset(70% 0 0 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        100% {
+          clip-path: inset(35% 0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+      }
+
+      @keyframes initialFiveMove {
+        0% {
+          visibility: visible;
+          clip-path: inset(70% 0 0 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        14.2857% {
+          clip-path: inset(70% 0 0 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        28.5714% {
+          clip-path: inset(35% 0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        42.8571% {
+          clip-path: inset(35% 0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        57.1428% {
+          clip-path: inset(35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        71.4285% {
+          clip-path: inset(70% 35% 0% 35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        85.7142% {
+          clip-path: inset(70% 35% 0% 35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        100% {
+          clip-path: inset(70% 0 0 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+      }
+
+      @keyframes initialSixMove {
+        0% {
+          visibility: visible;
+          clip-path: inset(70% 35% 0% 35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        14.2857% {
+          clip-path: inset(70% 35% 0% 35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        28.5714% {
+          clip-path: inset(70% 0 0 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        42.8571% {
+          clip-path: inset(70% 0 0 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        57.1428% {
+          clip-path: inset(35% 0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        71.4285% {
+          clip-path: inset(35% 0% 35% 70% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        85.7142% {
+          clip-path: inset(35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+        100% {
+          clip-path: inset(70% 35% 0% 35% round 5%);
+          animation-timing-function: cubic-bezier(0.86, 0, 0.07, 1);
+        }
+      }
+
+      .initial-loading-text {
+        margin-top: 2rem;
+        font-size: 1.125rem;
+        font-weight: 500;
+        color: rgb(55 65 81);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root">
+      <!-- Initial loading screen - shown immediately -->
+      <div id="initial-loader">
+        <div class="initial-loading-wrapper">
+          <div class="initial-box-wrap">
+            <div class="initial-box one"></div>
+            <div class="initial-box two"></div>
+            <div class="initial-box three"></div>
+            <div class="initial-box four"></div>
+            <div class="initial-box five"></div>
+            <div class="initial-box six"></div>
+          </div>
+        </div>
+        <div class="initial-loading-text">Bot Mark загружается...</div>
+      </div>
+    </div>
+    
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script 
+      src="https://cdn.gpteng.co/gptengineer.js" 
+      type="module" 
+      async 
+      crossorigin="anonymous"
+      onload="console.log('GPT Engineer script loaded')"
+      onerror="console.warn('GPT Engineer script failed to load')">
+    </script>
+    
+
+    
+    <script>
+      // Remove initial loader when React app is ready
+      window.addEventListener('DOMContentLoaded', function() {
+        // Give React time to mount
+        setTimeout(function() {
+          const initialLoader = document.getElementById('initial-loader');
+          if (initialLoader) {
+            initialLoader.classList.add('fade-out');
+            setTimeout(function() {
+              initialLoader.remove();
+            }, 500);
+          }
+        }, 100);
+      });
+    </script>
+  </body>
+</html>

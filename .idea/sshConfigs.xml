@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SshConfigs">
+    <configs>
+      <sshConfig authType="PASSWORD" host="85.198.90.129" id="370f61ef-af73-4537-bc2f-2daf1c894c94" port="22" customName="kaspi-panel" nameFormat="CUSTOM" username="root" useOpenSSHConfig="true">
+        <option name="customName" value="kaspi-panel" />
+      </sshConfig>
+    </configs>
+  </component>
+</project>

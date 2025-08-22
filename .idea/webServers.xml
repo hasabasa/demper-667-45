@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="96945027-56a1-47b5-aef8-f812df67afc7" name="kaspi-panel">
+        <fileTransfer rootFolder="/var/www/kaspi-price.kz" accessType="SFTP" host="85.198.90.129" port="22" sshConfigId="370f61ef-af73-4537-bc2f-2daf1c894c94" sshConfig="kaspi-panel">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="8474732a-121f-476c-ae3f-83b0853039bf" name="kaspi-panel-nginx">
+        <fileTransfer rootFolder="/etc/nginx" accessType="SFTP" host="85.198.90.129" port="22" sshConfigId="370f61ef-af73-4537-bc2f-2daf1c894c94" sshConfig="kaspi-panel">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

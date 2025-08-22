@@ -1,0 +1,74 @@
+# docker-compose-waha.yml
+# WAHA (WhatsApp HTTP API) Docker configuration
+
+version: '3.8'
+
+services:
+  waha:
+    image: devlikeapro/waha:latest
+    container_name: kaspi-waha
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      # Basic WAHA Configuration
+      - WAHA_PRINT_QR=true
+      - WAHA_RESTART_ALL_SESSIONS=true
+      - WAHA_LOG_LEVEL=info
+      
+      # Session Configuration  
+      - WAHA_SESSION_STORE=LOCAL
+      - WAHA_SESSION_STORE_CONFIG={"path": "/tmp/waha-sessions"}
+      
+      # Webhook Configuration (for receiving messages)
+      - WAHA_WEBHOOK_URL=http://kaspi-backend:8010/whatsapp/webhook
+      
+      # Security (optional)
+      # - WAHA_API_KEY=your-secret-api-key
+      
+      # Chrome/Puppeteer Configuration
+      - WAHA_CHROME_ARGS=--no-sandbox,--disable-setuid-sandbox,--disable-dev-shm-usage,--disable-accelerated-2d-canvas,--no-first-run,--no-zygote,--disable-gpu
+      
+    volumes:
+      # Persistent session storage
+      - waha-sessions:/tmp/waha-sessions
+      - waha-files:/tmp/waha-files
+      
+    networks:
+      - kaspi-network
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/sessions"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Your existing Kaspi backend service
+  kaspi-backend:
+    build: .
+    container_name: kaspi-backend
+    restart: unless-stopped
+    ports:
+      - "8010:8010"
+    environment:
+      - WAHA_URL=http://waha:3000
+      - WAHA_API_KEY=${WAHA_API_KEY:-}
+    depends_on:
+      - waha
+    networks:
+      - kaspi-network
+
+volumes:
+  waha-sessions:
+    driver: local
+  waha-files:
+    driver: local
+
+networks:
+  kaspi-network:
+    driver: bridge
+
+# Environment variables file (.env)
+# Create .env file with:
+# WAHA_API_KEY=your-secret-api-key-here
