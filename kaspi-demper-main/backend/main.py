@@ -44,8 +44,6 @@ from api_parser import (
 from routes.products import router as products_router
 from routes.kaspi import router as kaspi_router
 from routes.admin import router as admin_router
-from routes.websockets import router as websockets_router
-from routes.whatsapp import router as whatsapp_router
 from utils import set_supabase_client, has_active_subscription, has_existing_store
 from db import create_pool
 
@@ -65,8 +63,6 @@ app.add_middleware(
 app.include_router(products_router)
 app.include_router(kaspi_router)
 app.include_router(admin_router)
-app.include_router(websockets_router)
-app.include_router(whatsapp_router)
 
 @app.get("/health/supabase")
 async def health_check_supabase():
@@ -544,162 +540,23 @@ async def update_product_price(payload: PriceUpdateRequest):
 
 
 @app.get("/kaspi/get_sells_info/{shop_id}")
-async def get_sells_info(
-    shop_id: str,
-    page: int = 0,
-    page_size: int = 500
-):
-    """
-    Получает информацию о продажах с поддержкой пагинации
-    
-    Args:
-        shop_id: ID магазина
-        page: Номер страницы (начиная с 0)
-        page_size: Размер страницы (максимум 1000)
-    """
+async def get_sells_info(shop_id):
     try:
-        # Валидация параметров
-        if page < 0:
-            raise HTTPException(status_code=400, detail="Page must be >= 0")
-        if page_size <= 0 or page_size > 1000:
-            raise HTTPException(status_code=400, detail="Page size must be between 1 and 1000")
-            
-        success, result = await get_sells(shop_id, page, page_size)
+        success, result = await get_sells(shop_id)
 
         return {
             "success": success,
             "data": result
         }
-    except HTTPException:
-        raise
     except Exception as e:
-        logger.error(f"Ошибка при получении данных продаж: {str(e)}")
+        logger.error(f"Ошибка при обновлений цены: {str(e)}")
         raise HTTPException(
             status_code=500,
-            detail="Ошибка при получении данных продаж"
-        )
-
-
-@app.get("/kaspi/get_sells_info_bulk/{shop_id}")
-async def get_sells_info_bulk(
-    shop_id: str,
-    max_orders: int = 3000
-):
-    """
-    Получает все доступные данные о продажах (до max_orders заказов)
-    Загружает данные пакетами по 1000 заказов для оптимизации
-    
-    Args:
-        shop_id: ID магазина  
-        max_orders: Максимальное количество заказов для загрузки
-    """
-    try:
-        # Валидация параметров
-        if max_orders <= 0 or max_orders > 10000:
-            raise HTTPException(status_code=400, detail="Max orders must be between 1 and 10000")
-        
-        all_orders = []
-        all_products = []
-        combined_metrics = None
-        page = 0
-        page_size = 1000  # Максимальный размер пакета
-        total_fetched = 0
-        
-        logger.info(f"Starting bulk fetch for store {shop_id}, max_orders: {max_orders}")
-        
-        while total_fetched < max_orders:
-            # Вычисляем размер текущего пакета
-            remaining = max_orders - total_fetched
-            current_page_size = min(page_size, remaining)
-            
-            logger.info(f"Fetching page {page}, size {current_page_size}")
-            
-            success, result = await get_sells(shop_id, page, current_page_size)
-            
-            if not success:
-                return {
-                    "success": False,
-                    "error": result,
-                    "data": {
-                        "orders": all_orders,
-                        "top_products": all_products,
-                        "metrics": combined_metrics,
-                        "total_fetched": total_fetched
-                    }
-                }
-            
-            # Добавляем полученные данные
-            page_orders = result.get("orders", [])
-            page_products = result.get("top_products", [])
-            page_metrics = result.get("metrics", {})
-            pagination_info = result.get("pagination", {})
-            
-            all_orders.extend(page_orders)
-            
-            # Объединяем продукты (избегая дубликатов по ID/названию)
-            existing_product_names = {p.get('name', p.get('product_name', '')) for p in all_products}
-            for product in page_products:
-                product_name = product.get('name', product.get('product_name', ''))
-                if product_name not in existing_product_names:
-                    all_products.append(product)
-                    existing_product_names.add(product_name)
-            
-            # Объединяем метрики (берем последние или суммируем)
-            if combined_metrics is None:
-                combined_metrics = page_metrics
-            else:
-                # Суммируем числовые значения
-                for key, value in page_metrics.items():
-                    if isinstance(value, (int, float)) and key in combined_metrics:
-                        combined_metrics[key] += value
-                    else:
-                        combined_metrics[key] = value
-            
-            total_fetched += len(page_orders)
-            
-            # Проверяем есть ли еще данные
-            has_more = pagination_info.get("has_more", False)
-            if not has_more or len(page_orders) == 0:
-                logger.info(f"No more data available, stopping at {total_fetched} orders")
-                break
-                
-            page += 1
-            
-            # Небольшая пауза между запросами для снижения нагрузки на Kaspi API
-            import asyncio
-            await asyncio.sleep(0.1)
-        
-        logger.info(f"Bulk fetch completed: {total_fetched} orders, {len(all_products)} unique products")
-        
-        return {
-            "success": True,
-            "data": {
-                "orders": all_orders,
-                "top_products": all_products,
-                "metrics": combined_metrics,
-                "bulk_info": {
-                    "total_fetched": total_fetched,
-                    "max_requested": max_orders,
-                    "pages_fetched": page,
-                    "unique_products": len(all_products)
-                }
-            }
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Ошибка при массовой загрузке данных продаж: {str(e)}")
-        raise HTTPException(
-            status_code=500,
-            detail="Ошибка при массовой загрузке данных продаж"
+            detail="Ошибка при обновлений цены"
         )
 
 
 async def check_and_update_prices():
-    # Import здесь чтобы избежать циклических импортов
-    from routes.websockets import notify_price_update, notify_demper_status_change, notify_demper_error
-    
     clogger = logging.getLogger("price_checker")
     clogger.setLevel(logging.INFO)
 
@@ -720,24 +577,13 @@ async def check_and_update_prices():
             async with pool.acquire() as conn:
                 products = await conn.fetch(
                     """
-                    SELECT id, store_id, kaspi_sku, external_kaspi_id, price, min_profit, name
+                    SELECT id, store_id, kaspi_sku, external_kaspi_id, price, min_profit
                     FROM products
                     WHERE bot_active = TRUE
                     """
                 )
             
             clogger.info(f"Нашли {len(products)} активных продуктов.")
-            
-            # Уведомляем о начале работы демпера для каждого магазина
-            store_ids = {p["store_id"] for p in products}
-            for store_id in store_ids:
-                store_products_count = len([p for p in products if p["store_id"] == store_id])
-                await notify_demper_status_change(
-                    str(store_id), 
-                    "active", 
-                    products_processed=0,
-                    products_active=store_products_count
-                )
             for product in products:
                 product_id = product["id"]
                 product_external_id = product["external_kaspi_id"]
@@ -768,37 +614,10 @@ async def check_and_update_prices():
                                     int(new_price), product_id
                                 )
                             clogger.info(f"Демпер: Успешно - [{sku}] -> {new_price}")
-                            
-                            # Отправляем WebSocket уведомление об обновлении цены
-                            try:
-                                await notify_price_update(
-                                    store_id=str(product["store_id"]),
-                                    product_id=str(product_id),
-                                    product_name=product.get("name", sku),
-                                    old_price=float(current_price),
-                                    new_price=float(new_price),
-                                    competitor_price=float(min_offer_price),
-                                    min_profit=float(product.get("min_profit", 0)),
-                                    success=True
-                                )
-                            except Exception as ws_error:
-                                clogger.error(f"WebSocket notification error: {ws_error}")
-                            
+                            # clogger.info(f"Update response: {update_response}")
                         else:
-                            # Отправляем уведомление о неудачном обновлении
-                            try:
-                                await notify_price_update(
-                                    store_id=str(product["store_id"]),
-                                    product_id=str(product_id),
-                                    product_name=product.get("name", sku),
-                                    old_price=float(current_price),
-                                    new_price=float(new_price),
-                                    competitor_price=float(min_offer_price),
-                                    min_profit=float(product.get("min_profit", 0)),
-                                    success=False
-                                )
-                            except Exception as ws_error:
-                                clogger.error(f"WebSocket notification error: {ws_error}")
+                            pass
+                            # clogger.warning(f"Sync failed for product ID {product_id}, price not updated in database.")
 
                     else:
                         pass
@@ -806,16 +625,6 @@ async def check_and_update_prices():
                         #     f"No update needed for product ID {product_id}. Current price {current_price} is already optimal.")
                 else:
                     clogger.warning(f"Конкурентов нет [{sku}]")
-                    # Уведомляем об отсутствии конкурентов
-                    try:
-                        await notify_demper_error(
-                            store_id=str(product["store_id"]),
-                            error_message=f"Нет конкурентов для товара {sku}",
-                            product_id=str(product_id)
-                        )
-                    except Exception as ws_error:
-                        clogger.error(f"WebSocket notification error: {ws_error}")
-                
                 time.sleep(random.uniform(0.1, 0.3))
             store_ids = {p["store_id"] for p in products}
             for sid in store_ids:
@@ -826,17 +635,6 @@ async def check_and_update_prices():
                     clogger.error(f"Ошибка sync_store_api для {sid}: {e}", exc_info=True)
         except Exception as e:
             clogger.error(f"Error during price check/update: {e}", exc_info=True)
-            
-            # Уведомляем об общей ошибке демпера для всех магазинов
-            try:
-                store_ids = {p["store_id"] for p in products} if 'products' in locals() else set()
-                for store_id in store_ids:
-                    await notify_demper_error(
-                        store_id=str(store_id),
-                        error_message=f"Критическая ошибка демпера: {str(e)}"
-                    )
-            except Exception as ws_error:
-                clogger.error(f"WebSocket notification error during exception handling: {ws_error}")
 
         await asyncio.sleep(5)
 

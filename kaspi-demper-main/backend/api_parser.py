@@ -899,16 +899,7 @@ def calculate_metrics(json_data):
     }
 
 
-def get_sells_delivery_request(merchant_id: str, cookies: dict, page: int = 0, page_size: int = 500):
-    """
-    Получает данные о продажах с поддержкой пагинации
-    
-    Args:
-        merchant_id: ID мерчанта
-        cookies: Куки сессии
-        page: Номер страницы (начиная с 0)
-        page_size: Размер страницы (максимум 1000 за запрос для Kaspi API)
-    """
+def get_sells_delivery_request(merchant_id: str, cookies: dict):
     headers = {
         "accept": "application/json, text/*",
         "accept-encoding": "gzip, deflate, br, zstd",
@@ -924,63 +915,34 @@ def get_sells_delivery_request(merchant_id: str, cookies: dict, page: int = 0, p
         "x-ks-city": "750000000",
     }
 
-    # Ограничиваем размер страницы максимумом Kaspi API (1000)
-    actual_page_size = min(page_size, 1000)
-    start_index = page * actual_page_size
-
     urls = [
-        f"https://mc.shop.kaspi.kz/mc/api/orderTabs/active?count={actual_page_size}&selectedTabs=DELIVERY&startIndex={start_index}&loadPoints=false&_m={merchant_id}",
-        f"https://mc.shop.kaspi.kz/mc/api/orderTabs/active?count={actual_page_size}&selectedTabs=PICKUP&startIndex={start_index}&loadPoints=false&_m={merchant_id}"
+        f"https://mc.shop.kaspi.kz/mc/api/orderTabs/active?count=100&selectedTabs=DELIVERY&startIndex=0&loadPoints=false&_m={merchant_id}",
+        f"https://mc.shop.kaspi.kz/mc/api/orderTabs/active?count=100&selectedTabs=PICKUP&startIndex=0&loadPoints=false&_m={merchant_id}"
     ]
 
     combined_json_data = []
 
     for url in urls:
-        try:
-            response_data = fetch_orders(url, headers, cookies)
-            print(f"Fetched {len(response_data)} items from {url}")
-            combined_json_data.extend(response_data)
-        except Exception as e:
-            print(f"Error fetching from {url}: {e}")
-            # Продолжаем работу даже если один из запросов упал
-            continue
+        response_data = fetch_orders(url, headers, cookies)
+        print(response_data)
+        combined_json_data.extend(response_data)
 
     orders = map_order_data(combined_json_data)
     products = map_top_products(combined_json_data)
     metrics = calculate_metrics(combined_json_data)
-    
-    # Добавляем информацию о пагинации
-    total_fetched = len(orders)
-    has_more = total_fetched >= actual_page_size  # Если получили полную страницу, возможно есть еще данные
-    
     return {
         "orders": orders,
         "top_products": products,
-        "metrics": metrics,
-        "pagination": {
-            "page": page,
-            "page_size": actual_page_size,
-            "total_fetched": total_fetched,
-            "has_more": has_more,
-            "start_index": start_index
-        }
+        "metrics": metrics
     }
 
 
-async def get_sells(shop_id, page: int = 0, page_size: int = 500):
-    """
-    Получает данные о продажах с поддержкой пагинации
-    
-    Args:
-        shop_id: ID магазина
-        page: Номер страницы (начиная с 0) 
-        page_size: Размер страницы (максимум 1000)
-    """
+async def get_sells(shop_id):
     session_manager = SessionManager(shop_uid=shop_id)
     if not await session_manager.load():
         return False, 'Cессия истекла, пожалуйста, войдите заново.'
     cookies = session_manager.get_cookies()
-    return True, get_sells_delivery_request(session_manager.merchant_uid, cookies, page, page_size)
+    return True, get_sells_delivery_request(session_manager.merchant_uid, cookies)
 
 
 # Хранение активных SMS-сессий: session_id → { browser, context, page, user_id }
