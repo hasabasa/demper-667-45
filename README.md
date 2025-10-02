@@ -165,30 +165,5 @@ npm run preview
 - Астана (Склад 4)
 - Шымкент (Склад 5)
 
-## 🚀 Деплой
-
-### Vercel (Frontend)
-```bash
-npm run build
-# Загрузите dist/ в Vercel
-```
-
-### Railway/Render (Backend)
-```bash
-# Укажите kaspi-backend/backend как корневую папку
-# Команда запуска: uvicorn main:app --host 0.0.0.0 --port $PORT
-```
-
-## 📞 Поддержка
-
-- **Телеграм**: @your_telegram
-- **Email**: support@domain.com
-- **Issues**: [GitHub Issues](https://github.com/hasabasa/demper-667-45/issues)
-
-## 📄 Лицензия
-
-MIT License - см. [LICENSE](LICENSE) файл
-
----
 
 **⭐ Поставьте звезду если проект оказался полезным!**
