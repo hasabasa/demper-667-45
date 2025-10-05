@@ -18,7 +18,6 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useStoreConnection } from "@/hooks/useStoreConnection";
 import ConnectStoreButton from "../components/store/ConnectStoreButton";
-import LoadingScreen from "@/components/ui/loading-screen";
 
 const SalesPage = () => {
   const { user, loading: authLoading } = useAuth();
@@ -72,12 +71,6 @@ const SalesPage = () => {
       refetch();
     }
   }, [selectedStoreId, refetch, authLoading, user]);
-
-  // Show loading screen while authentication or stores are loading
-  if (authLoading || storeLoading) {
-    return <LoadingScreen text="Загрузка данных продаж..." />;
-  }
-
   const handleExport = (format: "excel" | "csv") => {
     const storeInfo = selectedStoreId && selectedStoreId !== 'all' 
       ? ` для магазина "${selectedStore?.name || 'Unknown'}"` 
@@ -208,11 +201,7 @@ const SalesPage = () => {
         )}
       </div>
       
-      {isLoading ? (
-        <div className="flex justify-center items-center h-48 md:h-64">
-          <div className="animate-spin rounded-full h-8 w-8 md:h-12 md:w-12 border-b-2 border-primary" />
-        </div>
-      ) : error ? (
+      {error ? (
         <Alert className="bg-gradient-to-r from-red-50 to-pink-50 border-red-200">
           <Info className="h-4 w-4 text-red-500" />
           <AlertDescription className="text-red-700 text-sm">

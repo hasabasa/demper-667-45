@@ -19,7 +19,6 @@ import type { SalesOrder } from '@/services/salesService';
 
 interface VirtualizedOrdersListProps {
   orders: SalesOrder[];
-  isLoading?: boolean;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onLoadMore?: () => void;
@@ -110,7 +109,6 @@ const OrderItem: React.FC<OrderItemProps> = ({ index, style, data }) => {
 
 export const VirtualizedOrdersList: React.FC<VirtualizedOrdersListProps> = ({
   orders,
-  isLoading = false,
   searchQuery,
   onSearchChange,
   onLoadMore,
@@ -147,9 +145,8 @@ export const VirtualizedOrdersList: React.FC<VirtualizedOrdersListProps> = ({
                 variant="outline" 
                 size="sm" 
                 onClick={onRefresh}
-                disabled={isLoading}
               >
-                <RefreshCw className={cn("h-4 w-4 mr-2", isLoading && "animate-spin")} />
+                <RefreshCw className="h-4 w-4 mr-2" />
                 Обновить
               </Button>
             )}
@@ -217,9 +214,6 @@ export const VirtualizedOrdersList: React.FC<VirtualizedOrdersListProps> = ({
           <div className="text-center py-8">
             <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground">Нет данных о заказах</p>
-            {isLoading && (
-              <p className="text-sm text-muted-foreground mt-2">Загружаем данные...</p>
-            )}
           </div>
         ) : (
           <div className="h-[600px] w-full">
