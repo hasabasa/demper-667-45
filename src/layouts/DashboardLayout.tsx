@@ -73,26 +73,8 @@ const DashboardLayout = () => {
 
   // Responsive sidebar widths
   const getSidebarWidth = () => {
-    if (isMobile) return sidebarOpen ? "w-64" : "w-0";
-    if (!sidebarOpen) return "w-16";
-    if (isExtraLargeDesktop) return "w-80";
-    if (isLargeDesktop) return "w-72";
-    return "w-64";
-  };
-
-  // Используем CSS класс main-content для управления margin'ом через CSS
-
-  const getMainPadding = () => {
-    if (isMobile) return "p-4";
-    if (isExtraLargeDesktop) return "p-8";
-    if (isLargeDesktop) return "p-6";
-    return "p-6";
-  };
-
-  const getMaxWidth = () => {
-    if (isExtraLargeDesktop) return "max-w-none";
-    if (isLargeDesktop) return "max-w-7xl mx-auto";
-    return "max-w-6xl mx-auto";
+    if (isMobile) return "280px";
+    return sidebarOpen ? "220px" : "60px";
   };
 
   return (
@@ -109,7 +91,7 @@ const DashboardLayout = () => {
             <Sidebar 
               isOpen={sidebarOpen} 
               setIsOpen={setSidebarOpen}
-              width={isMobile ? "280px" : getSidebarWidth()}
+              width={getSidebarWidth()}
             />
           </div>
           
@@ -133,14 +115,11 @@ const DashboardLayout = () => {
             />
             
             <main className={cn(
-              isMobile ? "p-4" : getMainPadding(),
+              isMobile ? "p-4" : "p-6",
               isDesktop && "min-h-[calc(100vh-80px)]",
               isMobile && "min-h-[calc(100vh-4rem)]"
             )}>
-              <div className={cn(
-                "w-full",
-                !isMobile && getMaxWidth()
-              )}>
+              <div className="w-full">
                 <Outlet />
               </div>
             </main>

@@ -30,11 +30,11 @@ interface HeaderProps {
 const getModuleName = (pathname: string): string => {
   const moduleNames: Record<string, string> = {
     '/dashboard/price-bot': 'Бот демпинга',
-    '/dashboard/sales': 'Мои продажи',
+    '/dashboard/sales': 'Анализ продаж',
     '/dashboard/unit-economics': 'Юнит-экономика',
     '/dashboard/preorders': 'Предзаказы',
-    '/dashboard/whatsapp': 'WhatsApp бот',
-    '/dashboard/integrations': 'Интеграции',
+    '/dashboard/whatsapp': 'WhatsApp рассылка',
+    '/dashboard/integrations': 'Подключение магазина',
     '/dashboard/profile': 'Профиль',
     '/dashboard': 'Панель управления'
   };
@@ -67,7 +67,7 @@ const Header = ({
   };
 
   const handleHelpClick = () => {
-    const whatsappNumber = "+77082171960";
+    const whatsappNumber = "+77474576759";
     const whatsappUrl = `https://wa.me/${whatsappNumber.replace('+', '')}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -112,23 +112,23 @@ const Header = ({
           {/* Show title only on larger screens when sidebar is collapsed */}
           {!isMobile && !sidebarOpen && (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <BarChart2 className="h-5 w-5 text-primary-foreground" />
-              </div>
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <BarChart2 className="h-5 w-5 text-primary-foreground" />
+            </div>
               <div className={cn(
                 "font-bold text-foreground",
                 isLargeDesktop && "text-xl",
                 isExtraLargeDesktop && "text-2xl"
               )}>
-                Mark Bot
+                Kaspi Price
               </div>
             </div>
           )}
 
           {/* Breadcrumb for large screens */}
           {(isLargeDesktop || isExtraLargeDesktop) && (
-            <div className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground">
-              <span>Панель управления</span>
+            <div className="hidden lg:flex items-center gap-1 text-sm text-muted-foreground">
+              
               <span>/</span>
               <span className="text-foreground font-medium">{currentModuleName}</span>
             </div>
@@ -149,7 +149,7 @@ const Header = ({
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
               <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500">
-                3
+                0
               </Badge>
             </Button>
           )}
@@ -158,13 +158,11 @@ const Header = ({
           {!isMobile && (
             <Button variant="outline" size="sm" className="hidden md:flex" onClick={handleHelpClick}>
               <HelpCircle className="h-4 w-4 mr-2" />
-              Помощь
+              Поддержка
             </Button>
           )}
           
-          {loading ? (
-            <div className="w-16 md:w-20 h-8 md:h-9 bg-muted animate-pulse rounded"></div>
-          ) : user ? (
+          {user ? (
             <div className="flex gap-2">
               {/* User menu for large screens */}
               {(isLargeDesktop || isExtraLargeDesktop) && (

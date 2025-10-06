@@ -26,7 +26,6 @@ import { useSalesData } from "@/hooks/useSalesData";
 import { useStoreContext } from "@/contexts/StoreContext";
 import { useAuth } from "@/components/integration/useAuth";
 import { toast } from "sonner";
-import LoadingScreen from "@/components/ui/loading-screen";
 import { cn } from "@/lib/utils";
 // Убираем мобильный хук для простоты
 // import { useMobileOptimizedSimple as useMobileOptimized } from "@/hooks/useMobileOptimizedSimple";
@@ -121,10 +120,7 @@ const SalesPageEnhanced = () => {
     return formatPrice(price); // Показываем полную сумму без сокращений
   };
 
-  // Показать загрузку
-  if (authLoading) {
-    return <LoadingScreen text="Загрузка данных продаж..." />;
-  }
+
 
   return (
     <div className="animate-fade-in bg-background min-h-screen">
@@ -262,7 +258,6 @@ const SalesPageEnhanced = () => {
           <TabsContent value="orders" className="mt-6">
             <VirtualizedOrdersList
               orders={filteredOrders}
-              isLoading={isLoading}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
               onLoadMore={handleLoadMore}
