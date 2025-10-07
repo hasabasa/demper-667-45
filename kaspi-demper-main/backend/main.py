@@ -129,9 +129,8 @@ async def health_check_db():
 async def options_kaspi_stores():
     return {"message": "CORS preflight handled"}
 
-SUPABASE_URL = os.getenv("SUPABASE_URL", "https://cnnxndfehzrttjpflxud.supabase.co")
-SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNubnhuZGZlaHpydHRqcGZseHVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1NDQ3OTgxMiwiZXhwIjoyMDcwMDU1ODEyfQ.Xu94om_Dbrmm7X48pZYRbRiGNzB3u5lqvrBoV6VMzXk")
-
+SUPABASE_URL = os.getenv("SUPABASE_URL", "https://jljglgvrqtjoqvxzmnja.supabase.co")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpsamdsZ3ZycXRqb3F2eHptbmphIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk2ODk4MzksImV4cCI6MjA3NTI2NTgzOX0.cVnaJDEtsPjNPXwOPfPGTam1Id61y8h4xyyQHqVr39w")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 @app.on_event("startup")

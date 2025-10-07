@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 
 const GlobalStoreSelector = () => {
-  const { selectedStoreId, stores, loading, setSelectedStore } = useStoreContext();
+  const { selectedStoreId, stores, setSelectedStore } = useStoreContext();
   const { isMobile, isLargeDesktop, isExtraLargeDesktop } = useScreenSize();
   const { currentConfig } = useRouteConfig();
   const [open, setOpen] = useState(false);
@@ -58,7 +58,7 @@ const GlobalStoreSelector = () => {
     setOpen(false);
   };
 
-  if (stores.length === 0 && !loading) {
+  if (stores.length === 0) {
     return null;
   }
 
@@ -70,7 +70,6 @@ const GlobalStoreSelector = () => {
           <Button 
             variant="outline" 
             className="flex items-center gap-2 h-9 px-3"
-            disabled={loading}
           >
             <Store className="h-4 w-4" />
             <span className="text-sm">{getDisplayName()}</span>
@@ -119,7 +118,6 @@ const GlobalStoreSelector = () => {
       <Select 
         value={selectedStoreId || (currentConfig.allowAllStores ? 'all' : stores[0]?.id)} 
         onValueChange={handleStoreChange}
-        disabled={loading}
       >
         <SelectTrigger className={cn("h-9", selectWidth)}>
           <SelectValue placeholder={currentConfig.allowAllStores ? "Все магазины" : "Выберите магазин"} />

@@ -3,7 +3,7 @@
 Pydantic модели для WAHA интеграции
 """
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from typing import Optional, Dict, Any, List
 from datetime import datetime
 from uuid import UUID
@@ -38,7 +38,8 @@ class WhatsAppTemplate(BaseModel):
     created_at: Optional[datetime] = Field(None, description="Дата создания")
     updated_at: Optional[datetime] = Field(None, description="Дата обновления")
     
-    @validator('template_text')
+    @field_validator('template_text')
+    @classmethod
     def validate_template_text(cls, v):
         """Валидация текста шаблона"""
         if not v.strip():
@@ -70,7 +71,8 @@ class WAHASettings(BaseModel):
     created_at: Optional[datetime] = Field(None, description="Дата создания")
     updated_at: Optional[datetime] = Field(None, description="Дата обновления")
     
-    @validator('waha_server_url')
+    @field_validator('waha_server_url')
+    @classmethod
     def validate_waha_url(cls, v):
         """Валидация URL WAHA сервера"""
         if not v.startswith(('http://', 'https://')):
@@ -100,7 +102,8 @@ class WhatsAppMessageLog(BaseModel):
     delivered_at: Optional[datetime] = Field(None, description="Время доставки")
     error_message: Optional[str] = Field(None, description="Сообщение об ошибке")
     
-    @validator('status')
+    @field_validator('status')
+    @classmethod
     def validate_status(cls, v):
         """Валидация статуса"""
         allowed_statuses = ['pending', 'sent', 'delivered', 'failed', 'read']

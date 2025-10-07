@@ -33,7 +33,6 @@ import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { useStoreConnection } from "@/hooks/useStoreConnection";
 import ConnectStoreButton from "../components/store/ConnectStoreButton";
-import LoadingScreen from "@/components/ui/loading-screen";
 
 const SalesPageStyled = () => {
   const { user, loading: authLoading } = useAuth();
@@ -89,10 +88,7 @@ const SalesPageStyled = () => {
     }
   }, [selectedStoreId, refetch, authLoading, user]);
 
-  // Show loading screen while authentication or stores are loading
-  if (authLoading || storeLoading) {
-    return <LoadingScreen text="Загрузка данных продаж..." />;
-  }
+
 
   const handleExport = (format: "excel" | "csv") => {
     console.log(`Exporting data in ${format} format`);
